@@ -35,3 +35,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+database_storage/
+postgres_data/
+
+
+.gradle/
+

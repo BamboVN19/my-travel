@@ -8,3 +8,6 @@ services:
       - POSTGRES_USER=my_travel
       - POSTGRES_PASSWORD=travel
       - POSTGRES_DB=mytravel_db
+    volumes:
+      # Sửa chỗ này: Bỏ chữ /data ở cuối đường dẫn bên trong container
+      - ../database_storage:/var/lib/postgresql
