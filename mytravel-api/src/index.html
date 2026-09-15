@@ -1,0 +1,438 @@
+
+Gemini
+
+Chat
+
+Spark
+beta
+New chat
+Search chats
+Images
+Videos
+Library
+New notebook
+Couldn't connect
+Reload
+Conversation with Gemini
+vẽ mock cho tao giao diện app mobile
+
+, AI generated
+gen cho tao file figma
+
+https://lh3.googleusercontent.com/gg/ACRwjavwKGCsOZ0QA5WmB1L4HMcC3tthmwjUUBso_W1DUv7EebcIEqKtv9IAsYMwlagDYcvp0IniDAqKuBj5zhedVJEQTWRZFMsLgosbXHqjHvDSFv5tYYIIQONjB7-qlCnCOOxRx-VHf_3t-hQJSj1gcjXBLiP84VtpSYcrN6AmK9OWpHlX34xX_S2JRGFXm8DfJeCqo-tcDOm3M4yfw7jXhviPlLVmBL3bTulg9pFGkbw6329cd08NOlJzk-kqiPS3YJfhV-fuy2kFSpPzX0BJjbETw-TBabydW8Cq0CNYxvu9KCUhlxxYDDiZmhOVtG3rj4PxZV2bIMF_rTdN3FV8IYIx=s1600?authuser=2
+Đã tạo trọn bộ file thiết kế Mobile UI Mockup cho hệ thống MyTravel System sẵn sàng để import trực tiếp vào Figma:
+
+HTML icon
+MyTravel_Figma_Mockup
+HTML
+Các cách đưa vào Figma (chỉnh sửa từng Frame & Layer 100% vector):
+Cách 1 – Dùng Plugin "html.to.design" (Khuyên dùng - Chuẩn Component nhất):
+
+Mở Figma, tạo một file mới.
+
+Nhấn chuột phải chọn Plugins → tìm html.to.design.
+
+Mở file MyTravel_Figma_Mockup.html trong trình duyệt hoặc dán code HTML vào plugin → Nhấn Import. Figma sẽ tự động render ra toàn bộ Auto-layout, Typography, Color styles và nút bấm chuẩn thiết kế.
+
+Cách 2 – Kéo thả Vector SVG:
+
+Bạn cũng có thể copy các mã SVG giao diện kéo thả trực tiếp vào Canvas Figma, Figma sẽ tự động bóc tách thành các Layer, Shape, Gradient và Text có thể sửa tự do.
+
+Cấu trúc 4 màn hình theo đúng Mindmap của bạn:
+Màn 1: Module Người dùng (User / Auth)
+
+Đăng ký / Đăng nhập có bảo mật JWT (JWT Security token badge).
+
+Form xác thực email/password, forgot password, nút Sign-in Google.
+
+Màn 2: Dashboard trung tâm (Integrating Modules)
+
+Thẻ hiển thị chuyến đi đang diễn ra (Active Trip Card kèm địa điểm, ngày, ngân sách).
+
+Lưới 4 phân hệ chính theo màu nhận diện: Lập kế hoạch (Xanh lục), Quản lý tài chính (Cam hổ phách), Lưu trữ Media (Tím), Hồ sơ cá nhân (Xanh dương).
+
+Danh sách xem nhanh lịch sử chuyến đi gần đây.
+
+Màn 3: Module Lập kế hoạch (Planning)
+
+Tích hợp khung bản đồ Google Maps API (định vị điểm đến và chặng dừng).
+
+Bộ lọc ngày hành trình (Day 1, Day 2, Day 3...).
+
+Timeline theo giờ (Hourly Timeline): Hiển thị từng mốc thời gian, trạng thái đặt vé, nút chỉ đường và nút thêm sự kiện mới.
+
+Màn 4: Module Quản lý tài chính & Lưu trữ Media
+
+Budget Card: Thanh tiến độ so sánh Ngân sách dự trù vs Thực tế đã chi, phân loại chi phí (Ăn uống, Di chuyển, Khách sạn, Vé).
+
+Lưu trữ (Media / Notes): Nhật ký hành trình dạng card ghi chú chi tiết kèm ngày giờ.
+
+Album ảnh: Grid xem trước hình ảnh theo từng chuyến đi và nút tải ảnh mới lên.
+
+
+
+
+Gemini is AI and can make mistakes.
+
+Analysing
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>MyTravel Mobile UI Kit - Ready for Figma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0B0F17; }
+        .screen-container { width: 360px; height: 760px; border-radius: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="p-10 text-slate-800">
+<div class="max-w-7xl mx-auto mb-8">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">MYTRAVEL SYSTEM • FIGMA UI MOCKUP</h1>
+            <p class="text-slate-400 mt-1 text-sm">Bộ khung thiết kế 4 màn hình chuẩn Mobile App theo sơ đồ Mindmap. Sử dụng trực tiếp hoặc import qua plugin <b>html.to.design</b> trên Figma.</p>
+        </div>
+        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-semibold">Mobile Artboard 360 x 760</span>
+    </div>
+</div>
+
+<!-- Grid of Screens -->
+<div class="flex flex-wrap gap-8 justify-center items-start">
+
+    <!-- SCREEN 1: AUTHENTICATION -->
+    <div class="flex flex-col items-center gap-3">
+        <div class="screen-container bg-white border-4 border-slate-700 overflow-hidden flex flex-col justify-between p-6 relative">
+            <!-- Status bar -->
+            <div class="flex justify-between items-center text-xs font-bold text-slate-800 pt-1">
+                <span>9:41</span>
+                <div class="flex gap-1.5 items-center">
+                    <span class="w-2 h-2 rounded-full bg-slate-800"></span>
+                    <span class="w-4 h-2 rounded-sm border border-slate-800"></span>
+                </div>
+            </div>
+
+            <div class="my-auto space-y-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-3 text-blue-600 font-black text-2xl shadow-sm border border-blue-100">
+                        ✈️
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">MyTravel</h2>
+                    <p class="text-xs text-slate-500 mt-1">Lập kế hoạch & Đồng hành mọi chuyến đi</p>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-600 block mb-1">Tài khoản</label>
+                        <input type="text" placeholder="Email / Tên đăng nhập" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none" value="daibn.work@gmail.com" readonly>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-600 block mb-1">Mật khẩu</label>
+                        <input type="password" value="••••••••••••" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-none" readonly>
+                    </div>
+                    <div class="text-right">
+                        <a href="#" class="text-[11px] font-semibold text-blue-600">Quên mật khẩu?</a>
+                    </div>
+                </div>
+
+                <button class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
+                    <span>🔒</span> Đăng nhập (JWT Security)
+                </button>
+
+                <div class="relative text-center">
+                    <hr class="border-slate-200 my-2">
+                    <span class="absolute top-0 left-1/2 -translate-x-1/2 bg-white px-2 text-[10px] text-slate-400">hoặc tiếp tục với</span>
+                </div>
+
+                <button class="w-full py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-xs rounded-xl flex items-center justify-center gap-2">
+                    <span>G</span> Tài khoản Google
+                </button>
+            </div>
+
+            <div class="text-center pb-2">
+                <p class="text-[11px] text-slate-500">Chưa có tài khoản? <span class="text-blue-600 font-bold">Đăng ký</span></p>
+                <div class="w-28 h-1 bg-slate-300 rounded-full mx-auto mt-4"></div>
+            </div>
+        </div>
+        <span class="text-xs font-semibold text-slate-400">01 • Module Người dùng (Auth)</span>
+    </div>
+
+    <!-- SCREEN 2: HOME DASHBOARD -->
+    <div class="flex flex-col items-center gap-3">
+        <div class="screen-container bg-slate-50 border-4 border-slate-700 overflow-hidden flex flex-col justify-between relative">
+            <!-- Scrollable content -->
+            <div class="p-5 space-y-4 overflow-y-auto hide-scrollbar">
+                <!-- Top bar -->
+                <div class="flex justify-between items-center pt-2">
+                    <div>
+                        <p class="text-[11px] text-slate-400 font-medium">Xin chào,</p>
+                        <h3 class="text-base font-bold text-slate-800">Bùi Ngọc Đại 👋</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center text-xs border border-blue-200">
+                        ND
+                    </div>
+                </div>
+
+                <!-- Active Trip Banner -->
+                <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl p-4 text-white shadow-md">
+                    <span class="text-[10px] uppercase font-bold tracking-wider text-blue-200">Chuyến đi hiện tại</span>
+                    <h4 class="text-lg font-black mt-1">Đà Lạt Mộng Mơ 🌲</h4>
+                    <p class="text-xs text-blue-100 mt-0.5">18/10 - 22/10 • 5 ngày 4 đêm</p>
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/10 text-xs">
+                        <span>Ngân sách: <b>12.000.000đ</b></span>
+                        <span class="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-semibold">Đang diễn ra</span>
+                    </div>
+                </div>
+
+                <!-- 4 Core Modules -->
+                <div>
+                    <h5 class="text-xs font-bold text-slate-700 mb-2.5 uppercase tracking-wide">Phân hệ chức năng</h5>
+                    <div class="grid grid-cols-2 gap-3">
+                        <!-- Planning -->
+                        <div class="bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm hover:shadow">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm mb-2">
+                                📅
+                            </div>
+                            <h6 class="text-xs font-bold text-slate-800">Lập kế hoạch</h6>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Lịch trình, Maps API</p>
+                            <div class="mt-2 text-[10px] font-bold text-emerald-600">Tạo chuyến →</div>
+                        </div>
+
+                        <!-- Budget -->
+                        <div class="bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm hover:shadow">
+                            <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-sm mb-2">
+                                💰
+                            </div>
+                            <h6 class="text-xs font-bold text-slate-800">Quản lý tài chính</h6>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Biểu đồ, Chi tiêu</p>
+                            <div class="mt-2 text-[10px] font-bold text-amber-600">Kiểm tra →</div>
+                        </div>
+
+                        <!-- Media -->
+                        <div class="bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm hover:shadow">
+                            <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-sm mb-2">
+                                📸
+                            </div>
+                            <h6 class="text-xs font-bold text-slate-800">Lưu trữ Media</h6>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Album, Nhật ký</p>
+                            <div class="mt-2 text-[10px] font-bold text-purple-600">Kho ảnh →</div>
+                        </div>
+
+                        <!-- Profile -->
+                        <div class="bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm hover:shadow">
+                            <div class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-sm mb-2">
+                                👤
+                            </div>
+                            <h6 class="text-xs font-bold text-slate-800">Người dùng</h6>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Hồ sơ, Lịch sử</p>
+                            <div class="mt-2 text-[10px] font-bold text-blue-600">Thiết lập →</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History preview -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-slate-700 uppercase tracking-wide">Lịch sử chuyến đi</span>
+                        <span class="text-[11px] text-blue-600 font-semibold">Xem tất cả</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-base">🏖️</div>
+                            <div>
+                                <h6 class="text-xs font-bold text-slate-800">Phú Quốc 3N2Đ</h6>
+                                <p class="text-[10px] text-slate-400">Đã xong • Chi phí: 14.2M</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Hoàn thành</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Nav -->
+            <div class="bg-white border-t border-slate-100 px-6 py-2.5 flex justify-between items-center text-[10px] font-semibold text-slate-400">
+                <div class="text-blue-600 flex flex-col items-center">
+                    <span>🏠</span>
+                    <span>Khám phá</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span>🗓️</span>
+                    <span>Kế hoạch</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span>📊</span>
+                    <span>Tài chính</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span>👤</span>
+                    <span>Hồ sơ</span>
+                </div>
+            </div>
+        </div>
+        <span class="text-xs font-semibold text-slate-400">02 • Dashboard Tổng quan</span>
+    </div>
+
+    <!-- SCREEN 3: PLANNING & TIMELINE -->
+    <div class="flex flex-col items-center gap-3">
+        <div class="screen-container bg-slate-50 border-4 border-slate-700 overflow-hidden flex flex-col justify-between relative">
+            <div class="p-5 space-y-3.5 overflow-y-auto hide-scrollbar">
+                <!-- Top nav -->
+                <div class="flex items-center justify-between pt-1">
+                    <button class="w-7 h-7 rounded-full bg-white flex items-center justify-center text-xs shadow-sm">←</button>
+                    <h4 class="text-xs font-bold text-slate-800">Lịch trình & Google Maps</h4>
+                    <button class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">+</button>
+                </div>
+
+                <!-- Maps Integration Card -->
+                <div class="h-32 bg-slate-200 rounded-2xl overflow-hidden relative border border-slate-200 shadow-inner flex items-center justify-center">
+                    <div class="absolute inset-0 bg-emerald-100/40 opacity-70"></div>
+                    <div class="absolute top-2 left-2 bg-white/90 backdrop-blur px-2 py-0.5 rounded text-[9px] font-bold text-slate-700 shadow-sm">
+                        📍 Google Maps API Live
+                    </div>
+                    <!-- Pin Simulation -->
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span class="text-red-500 text-xl animate-bounce">📍</span>
+                        <span class="text-[9px] font-extrabold bg-slate-900 text-white px-1.5 py-0.5 rounded-full shadow">Đà Lạt Center</span>
+                    </div>
+                </div>
+
+                <!-- Day filter buttons -->
+                <div class="flex gap-2 text-xs">
+                    <span class="px-3 py-1 bg-blue-600 text-white font-bold rounded-lg shadow-sm">Ngày 1</span>
+                    <span class="px-3 py-1 bg-white text-slate-600 font-medium rounded-lg border border-slate-200">Ngày 2</span>
+                    <span class="px-3 py-1 bg-white text-slate-600 font-medium rounded-lg border border-slate-200">Ngày 3</span>
+                    <span class="px-2 py-1 bg-white text-slate-400 font-medium rounded-lg border border-slate-200">+</span>
+                </div>
+
+                <!-- Timeline -->
+                <div class="space-y-3 relative pl-4 before:content-[''] before:absolute before:left-1 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
+                    <!-- Item 1 -->
+                    <div class="relative">
+                        <div class="absolute -left-[17px] top-1.5 w-2.5 h-2.5 rounded-full bg-blue-600 ring-4 ring-blue-100"></div>
+                        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-bold text-blue-600">07:30 AM</span>
+                                <span class="text-[9px] bg-emerald-50 text-emerald-600 font-bold px-1.5 py-0.5 rounded">Đã đặt vé</span>
+                            </div>
+                            <h6 class="text-xs font-bold text-slate-800 mt-0.5">Check-in Sân Bay Tân Sơn Nhất</h6>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Chuyến bay VN123 đến sân bay Liên Khương</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="relative">
+                        <div class="absolute -left-[17px] top-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-100"></div>
+                        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-bold text-emerald-600">11:00 AM</span>
+                                <span class="text-[9px] text-blue-600 font-semibold cursor-pointer">Xem Map ↗</span>
+                            </div>
+                            <h6 class="text-xs font-bold text-slate-800 mt-0.5">Cà phê Đồi Chè Mê Linh</h6>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Ăn trưa nhẹ và check-in sống ảo</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="relative">
+                        <div class="absolute -left-[17px] top-1.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-4 ring-amber-100"></div>
+                        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-bold text-amber-600">14:30 PM</span>
+                            </div>
+                            <h6 class="text-xs font-bold text-slate-800 mt-0.5">Check-in Hôtel Colline Đà Lạt</h6>
+                            <p class="text-[10px] text-slate-500 mt-0.5">Nhận phòng nghỉ ngơi chuẩn bị cho tối</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-white border-t border-slate-100">
+                <button class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5">
+                    <span>+</span> Thêm mốc lịch trình chi tiết
+                </button>
+            </div>
+        </div>
+        <span class="text-xs font-semibold text-slate-400">03 • Module Lập kế hoạch (Planning)</span>
+    </div>
+
+    <!-- SCREEN 4: BUDGET & MEDIA NOTES -->
+    <div class="flex flex-col items-center gap-3">
+        <div class="screen-container bg-slate-50 border-4 border-slate-700 overflow-hidden flex flex-col justify-between relative">
+            <div class="p-5 space-y-4 overflow-y-auto hide-scrollbar">
+                <!-- Top bar -->
+                <div class="flex items-center justify-between pt-1">
+                    <button class="w-7 h-7 rounded-full bg-white flex items-center justify-center text-xs shadow-sm">←</button>
+                    <h4 class="text-xs font-bold text-slate-800">Tài chính & Ghi chú Media</h4>
+                    <button class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-xs">⚙️</button>
+                </div>
+
+                <!-- Budget Comparison Card -->
+                <div class="bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-slate-800">So sánh Ngân sách vs Thực tế</span>
+                        <span class="text-blue-600 font-bold text-[11px]">70% đã tiêu</span>
+                    </div>
+                    <!-- Progress bar -->
+                    <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden flex">
+                        <div class="bg-blue-600 h-full rounded-full" style="width: 70%"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-500 pt-1">
+                        <span>Đã chi: <b class="text-slate-800">8.400.000đ</b></span>
+                        <span>Dự trù: <b class="text-slate-800">12.000.000đ</b></span>
+                    </div>
+                    <!-- Category breakdown mini chips -->
+                    <div class="grid grid-cols-2 gap-1.5 pt-1 text-[9px] text-slate-600">
+                        <span class="bg-slate-50 p-1 rounded border border-slate-100">🍜 Ăn uống: 3.2M</span>
+                        <span class="bg-slate-50 p-1 rounded border border-slate-100">🚗 Di chuyển: 2.8M</span>
+                        <span class="bg-slate-50 p-1 rounded border border-slate-100">🏨 Khách sạn: 1.8M</span>
+                        <span class="bg-slate-50 p-1 rounded border border-slate-100">🎟️ Vé & Tour: 600K</span>
+                    </div>
+                </div>
+
+                <!-- Notes / Journal -->
+                <div>
+                    <h5 class="text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">Nhật ký hành trình</h5>
+                    <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[11px] font-bold text-slate-800">📝 Lưu ý thời tiết Đà Lạt</span>
+                            <span class="text-[9px] text-purple-600 font-semibold">09:15 AM</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 leading-relaxed">Nhiệt độ tối hạ còn 14°C, nhớ mang áo ấm và găng tay. Nhận xe máy tại bến lúc 14h.</p>
+                    </div>
+                </div>
+
+                <!-- Media Album Grid -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-slate-700 uppercase tracking-wide">Album ảnh chuyến đi</span>
+                        <span class="text-[10px] text-purple-600 font-semibold">+ Thêm ảnh</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="aspect-square rounded-xl bg-gradient-to-br from-indigo-200 to-blue-300 flex items-center justify-center text-xs shadow-inner">
+                            🏞️
+                        </div>
+                        <div class="aspect-square rounded-xl bg-gradient-to-br from-pink-200 to-rose-300 flex items-center justify-center text-xs shadow-inner">
+                            🌸
+                        </div>
+                        <div class="aspect-square rounded-xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400 hover:border-blue-400 cursor-pointer">
+                            <span class="text-sm">+</span>
+                            <span class="text-[8px] font-semibold mt-0.5">Tải lên</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-white border-t border-slate-100 space-y-2">
+                <button class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5">
+                    <span>+</span> Ghi chép chi phí thực tế
+                </button>
+            </div>
+        </div>
+        <span class="text-xs font-semibold text-slate-400">04 • Phân hệ Chi tiêu & Media Lưu trữ</span>
+    </div>
+
+</div>
+</body>
+</html>
