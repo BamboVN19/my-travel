@@ -1,10 +1,13 @@
 package com.mytravel.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Table(name = "users")
 @Data
@@ -19,6 +22,7 @@ public class User {
   @Column(unique = true, nullable = false)
   private String username;
 
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
   @Column(name = "password_hash", nullable = false)
   private String passwordHash;
 
@@ -28,6 +32,24 @@ public class User {
   @Column(name = "full_name")
   private String fullName;
 
+  @Column(name = "phone_number")
+  private String phoneNumber;
+
+  @Column(name = "avatar_url")
+  private String avatarUrl;
+
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @Column(name = "refresh_token")
+  private String refreshToken;
+
+  @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
   @Column(name = "created_at")
-  private LocalDateTime createdAt = LocalDateTime.now();
+  private LocalDateTime createdAt;
+
+  @PrePersist
+  protected void onCreate() {
+    if (createdAt == null) {
+      createdAt = LocalDateTime.now();
+    }
+  }
 }

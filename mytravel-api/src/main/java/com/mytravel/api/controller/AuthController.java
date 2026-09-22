@@ -6,16 +6,17 @@ import com.mytravel.api.dto.RegisterRequest;
 import com.mytravel.api.entity.User;
 import com.mytravel.api.security.JwtUtils;
 import com.mytravel.api.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-  @Autowired
-  private UserService userService;
+  private final UserService userService;
+  private final JwtUtils jwtUtils;
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
@@ -26,19 +27,11 @@ public class AuthController {
     }
   }
 
-  @Autowired
-  private JwtUtils jwtUtils; // Tiêm công cụ JWT vào
-
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody LoginRequest request) {
     try {
-      // 1. Kiểm tra username/password (như cũ)
       User user = userService.login(request.getUsername(), request.getPassword());
-
-      // 2. Nếu OK, tạo Access Token
       String token = jwtUtils.generateToken(user.getUsername());
-
-      // 3. Trả về cho Client
       return ResponseEntity.ok(new LoginResponse(token, "Bearer", user.getUsername()));
     } catch (Exception e) {
       return ResponseEntity.status(401).body(e.getMessage());

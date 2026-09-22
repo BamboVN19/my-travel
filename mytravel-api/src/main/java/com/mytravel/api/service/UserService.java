@@ -1,23 +1,24 @@
 package com.mytravel.api.service;
 
 import com.mytravel.api.dto.RegisterRequest;
+import com.mytravel.api.dto.UserProfileResponse;
 import com.mytravel.api.entity.User;
 import com.mytravel.api.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-  @Autowired
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  // Logic Đăng ký
-  public User register(RegisterRequest request) {
+  // Logic Đăng ký - Mật khẩu được mã hóa BCrypt trước khi lưu vào DB
+  public UserProfileResponse register(RegisterRequest request) {
     if (userRepository.findByUsername(request.getUsername()).isPresent()) {
       throw new RuntimeException("Username đã tồn tại!");
     }
@@ -29,13 +30,23 @@ public class UserService {
       .username(request.getUsername())
       .email(request.getEmail())
       .fullName(request.getFullName())
-      .passwordHash(passwordEncoder.encode(request.getPassword())) // Mã hóa BCrypt
+      .passwordHash(passwordEncoder.encode(request.getPassword())) // Mã hóa 1 chiều BCrypt + Salt ngẫu nhiên
       .build();
 
-    return userRepository.save(user);
+    User savedUser = userRepository.save(user);
+
+    return UserProfileResponse.builder()
+      .id(savedUser.getId())
+      .username(savedUser.getUsername())
+      .email(savedUser.getEmail())
+      .fullName(savedUser.getFullName())
+      .phoneNumber(savedUser.getPhoneNumber())
+      .avatarUrl(savedUser.getAvatarUrl())
+      .createdAt(savedUser.getCreatedAt())
+      .build();
   }
 
-  // Logic Đăng nhập
+  // Logic Đăng nhập - So sánh mật khẩu plain-text với passwordHash trong DB qua BCrypt
   public User login(String username, String password) {
     User user = userRepository.findByUsername(username)
       .orElseThrow(() -> new RuntimeException("Tài khoản không tồn tại!"));
@@ -44,5 +55,30 @@ public class UserService {
       throw new RuntimeException("Mật khẩu không chính xác!");
     }
     return user;
+  }
+
+  // Lấy người dùng hiện tại đang đăng nhập
+  public User getCurrentUser() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+      throw new RuntimeException("Người dùng chưa được xác thực!");
+    }
+    String username = (String) auth.getPrincipal();
+    return userRepository.findByUsername(username)
+      .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng!"));
+  }
+
+  // Lấy thông tin cá nhân
+  public UserProfileResponse getCurrentUserProfile() {
+    User user = getCurrentUser();
+    return UserProfileResponse.builder()
+      .id(user.getId())
+      .username(user.getUsername())
+      .email(user.getEmail())
+      .fullName(user.getFullName())
+      .phoneNumber(user.getPhoneNumber())
+      .avatarUrl(user.getAvatarUrl())
+      .createdAt(user.getCreatedAt())
+      .build();
   }
 }

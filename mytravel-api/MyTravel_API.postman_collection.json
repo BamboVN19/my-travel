@@ -1,0 +1,397 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "MyTravel API Collection",
+    "description": "Collection API đầy đủ cho hệ thống MyTravel (Auth, User, Trip, Itinerary, Expense, Media) theo mô hình MVC.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "1.1 Đăng ký tài khoản",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"thanhminh\",\n  \"password\": \"123456\",\n  \"email\": \"thanhminh@example.com\",\n  \"fullName\": \"Trần Thanh Minh\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.2 Đăng nhập lấy Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.accessToken) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.accessToken);",
+                  "    console.log(\"Token updated successfully:\", jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"thanhminh\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. User",
+      "item": [
+        {
+          "name": "2.1 Lấy thông tin cá nhân (Me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "me"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Trip",
+      "item": [
+        {
+          "name": "3.1 Tạo chuyến đi mới",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.id) {",
+                  "    pm.collectionVariables.set(\"tripId\", jsonData.id);",
+                  "    console.log(\"Trip ID set to:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Chuyến đi Đà Nẵng - Hội An\",\n  \"destination\": \"Đà Nẵng\",\n  \"startDate\": \"15-10-2026\",\n  \"endDate\": \"20-10-2026\",\n  \"totalBudget\": 6500000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/trips",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trips"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.2 Xem danh sách chuyến đi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trips",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trips"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.3 Xem chi tiết 1 chuyến đi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trips/{{tripId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "{{tripId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.4 Xóa chuyến đi",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trips/{{tripId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "{{tripId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Itinerary",
+      "item": [
+        {
+          "name": "4.1 Thêm lịch trình (Timeline)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": {{tripId}},\n  \"dayNumber\": 1,\n  \"activityTime\": \"08:30:00\",\n  \"activityName\": \"Tham quan Bà Nà Hills\",\n  \"locationName\": \"Bà Nà Hills, Đà Nẵng\",\n  \"latitude\": 15.99898000,\n  \"longitude\": 107.98634000,\n  \"placeId\": \"ChIJyY43V_2-QjERL_wJmZ1x17s\",\n  \"note\": \"Đi cáp treo lúc 8h30 sáng\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/itineraries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "itineraries"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.2 Xem lịch trình của chuyến đi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trips/{{tripId}}/itineraries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "{{tripId}}",
+                "itineraries"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Expense",
+      "item": [
+        {
+          "name": "5.1 Ghi chép chi tiêu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tripId\": {{tripId}},\n  \"amount\": 850000,\n  \"category\": \"Vé tham quan\",\n  \"description\": \"Mua vé cáp treo Bà Nà Hills\",\n  \"expenseDate\": \"15-10-2026\",\n  \"paymentMethod\": \"Chuyển khoản\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "expenses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.2 Xem danh sách chi tiêu chuyến đi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trips/{{tripId}}/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "{{tripId}}",
+                "expenses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.3 Xem tổng tiền đã tiêu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/trips/{{tripId}}/expenses/total",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "trips",
+                "{{tripId}}",
+                "expenses",
+                "total"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Media",
+      "item": [
+        {
+          "name": "6.1 Upload ảnh kỷ niệm",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "tripId",
+                  "value": "{{tripId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/media/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "media",
+                "upload"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tripId",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}
