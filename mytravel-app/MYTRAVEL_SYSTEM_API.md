@@ -1,215 +1,353 @@
-# 🚀 MYTRAVEL SYSTEM - Tài Liệu Thiết Kế API & Data Models (Khớp Backend DTO)
-
-Tài liệu đồng bộ 100% giữa **Backend (mytravel-api)** và **Mobile App (mytravel-app)**.
-
----
-
-## 📌 1. Tổng Quan Kiến Trúc & Cấu Hình
-
-- **Base URL (Local Server)**: `http://10.0.2.2:8080/` (Dành cho Android Emulator)
-- **Base URL (Production Server)**: `https://api.mytravel.com/`
-- **Authentication**: JWT Token truyền qua Header: `Authorization: Bearer <token>`
-- **Định dạng Ngày/Giờ**:
-  - `LocalDate`: `"dd-MM-yyyy"` (ví dụ: `"01-06-2025"`)
-  - `LocalTime`: `"HH:mm:ss"` (ví dụ: `"08:00:00"`)
-  - `LocalDateTime`: `"dd-MM-yyyy HH:mm:ss"` (ví dụ: `"01-06-2025 08:00:00"`)
+# 🗺️ MyTravel RESTful API System Documentation
+> **Version:** 1.0.0  
+> **Base URL:** `https://api.mytravel.com/api/v1` (Hoặc Local Server: `http://localhost:8080/api/v1`)  
+> **Format:** JSON (`Content-Type: application/json`)  
+> **Authentication:** Bearer Token JWT (`Authorization: Bearer <token>`)  
 
 ---
 
-## 🔐 2. Module Auth & Người Dùng (User)
+## 📋 Danh Sách Phân Hệ API (API Modules Overview)
 
-### Data Models (DTOs)
+| Phân Hệ API | Base Path | Mô Tả Chức Năng |
+| :--- | :--- | :--- |
+| **Authentication** | `/auth` | Đăng nhập, Đăng ký, Quên mật khẩu, Đặt lại mật khẩu OTP, Đổi mật khẩu |
+| **User Profile** | `/users` | Lấy thông tin cá nhân người dùng, Cập nhật hồ sơ |
+| **Trips (Kế Hoạch)** | `/trips` | Tạo chuyến đi mới, Lấy danh sách chuyến đi, Chi tiết chuyến đi, Xóa chuyến đi |
+| **Itineraries (Lịch Trình)** | `/itineraries` | Lấy lịch trình theo ngày, Thêm mốc lịch trình, Cập nhật & Xóa mốc lịch trình |
+| **Expenses (Tài Chính)** | `/expenses` | Lấy danh sách chi tiêu theo chuyến đi/Total, Thêm khoản chi, Tổng ngân sách |
+| **Media & Storage** | `/media` | Tải lên album ảnh/video kỷ niệm chuyến đi |
 
-#### `LoginRequest` / `LoginResponse`
+---
+
+## 1. 🔐 Phân Hệ Xác Thực & Tài Khoản (`/auth`)
+
+### 1.1 Đăng Nhập Người Dùng
+* **HTTP Method:** `POST`
+* **Endpoint:** `/auth/login`
+* **Request Body:**
 ```json
-// POST /api/auth/login
 {
   "username": "admin",
   "password": "123"
 }
-
-// Response
+```
+* **Response `200 OK`:**
+```json
 {
-  "accessToken": "mock-token-xyz-123",
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYxNjIzOTAyMn0...",
   "tokenType": "Bearer",
   "username": "admin"
 }
 ```
 
-#### `RegisterRequest`
+### 1.2 Đăng Ký Tài Khoản Mới
+* **HTTP Method:** `POST`
+* **Endpoint:** `/auth/register`
+* **Request Body:**
 ```json
-// POST /api/auth/register
 {
-  "username": "user123",
-  "password": "password123",
-  "email": "user@example.com",
-  "fullName": "Nguyễn Văn A"
+  "username": "ngocdai",
+  "email": "ngocdai@gmail.com",
+  "password": "Password123@",
+  "fullName": "Bùi Ngọc Đại",
+  "phone": "0987654321"
+}
+```
+* **Response `201 Created`:**
+```json
+{
+  "message": "Đăng ký tài khoản thành công!",
+  "status": 201
 }
 ```
 
-#### `UserProfileResponse` (`UserProfile`)
+### 1.3 Gửi Yêu Cầu Quên Mật Khẩu (Gửi OTP)
+* **HTTP Method:** `POST`
+* **Endpoint:** `/auth/forgot-password`
+* **Request Body:**
 ```json
-// GET /api/users/me
+{
+  "email": "ngocdai@gmail.com"
+}
+```
+
+### 1.4 Xác Nhận OTP & Đặt Lại Mật Khẩu
+* **HTTP Method:** `POST`
+* **Endpoint:** `/auth/reset-password`
+* **Request Body:**
+```json
+{
+  "email": "ngocdai@gmail.com",
+  "otpCode": "123456",
+  "newPassword": "NewPassword123@"
+}
+```
+
+### 1.5 Thay Đổi Mật Khẩu Khỏi Phiên Đăng Nhập
+* **HTTP Method:** `POST`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/auth/change-password`
+* **Request Body:**
+```json
+{
+  "oldPassword": "123",
+  "newPassword": "NewPassword123@"
+}
+```
+
+---
+
+## 2. 👤 Phân Hệ Hồ Sơ Cá Nhân (`/users`)
+
+### 2.1 Lấy Thông Tin Người Dùng
+* **HTTP Method:** `GET`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/users/profile`
+* **Response `200 OK`:**
+```json
 {
   "id": 1,
   "username": "admin",
   "email": "admin@travel.com",
   "fullName": "Bùi Ngọc Đ",
-  "phoneNumber": "0987654321",
+  "phone": "0987654321",
   "avatarUrl": "https://i.pravatar.cc/300",
   "createdAt": "01-01-2025 08:00:00"
 }
 ```
 
-### Danh sách API Endpoints
-
-| STT | Chức năng | Method | Endpoint Path | Request Body | Response Success |
-| :---: | :--- | :---: | :--- | :--- | :--- |
-| 1 | Đăng ký tài khoản | `POST` | `/api/auth/register` | `RegisterRequest` | `200 OK` |
-| 2 | Đăng nhập lấy Token | `POST` | `/api/auth/login` | `LoginRequest` | `LoginResponse` (200 OK) |
-| 3 | Lấy thông tin cá nhân | `GET` | `/api/users/me` | None (Token Header) | `UserProfile` |
-
 ---
 
-## 📅 3. Module Chuyến Đi (Trip)
+## 3. 🧳 Phân Hệ Chuyến Đi (`/trips`)
 
-### Data Models (DTOs)
-
-#### `TripRequest` / `TripResponse` (`Trip`)
+### 3.1 Khởi Tạo Chuyến Đi Mới
+* **HTTP Method:** `POST`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/trips`
+* **Request Body:**
 ```json
-// POST /api/trips  hoặc  GET /api/trips
 {
-  "id": 1,
   "userId": 1,
-  "title": "Chuyến đi Đà Nẵng",
-  "destination": "Đà Nẵng",
-  "startDate": "01-06-2025",
-  "endDate": "05-06-2025",
-  "totalBudget": 10000000.0,
-  "status": "PLANNED",
-  "createdAt": "01-01-2025 08:00:00"
+  "title": "Chuyến đi Đà Lạt, Lâm Đồng",
+  "destination": "Đà Lạt, Lâm Đồng",
+  "startDate": "18-10-2026",
+  "endDate": "22-10-2026",
+  "totalBudget": 12000000.0,
+  "status": "PLANNED"
+}
+```
+* **Response `201 Created`:**
+```json
+{
+  "id": 1728000000000,
+  "userId": 1,
+  "title": "Chuyến đi Đà Lạt, Lâm Đồng",
+  "destination": "Đà Lạt, Lâm Đồng",
+  "startDate": "18-10-2026",
+  "endDate": "22-10-2026",
+  "totalBudget": 12000000.0,
+  "status": "PLANNED"
 }
 ```
 
-### Danh sách API Endpoints
+### 3.2 Lấy Danh Sách Tất Cả Chuyến Đi
+* **HTTP Method:** `GET`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/trips`
+* **Response `200 OK`:**
+```json
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "title": "Chuyến đi Phố Cổ Hội An, Quảng Nam",
+    "destination": "Hội An, Quảng Nam",
+    "startDate": "29-09-2026",
+    "endDate": "01-10-2026",
+    "totalBudget": 12000000.0,
+    "status": "PLANNED"
+  },
+  {
+    "id": 2,
+    "userId": 1,
+    "title": "Chuyến đi Đà Nẵng",
+    "destination": "Đà Nẵng",
+    "startDate": "01-06-2025",
+    "endDate": "05-06-2025",
+    "totalBudget": 10000000.0,
+    "status": "ONGOING"
+  },
+  {
+    "id": 3,
+    "userId": 1,
+    "title": "Khám phá Đà Lạt",
+    "destination": "Đà Lạt",
+    "startDate": "10-07-2025",
+    "endDate": "14-07-2025",
+    "totalBudget": 8000000.0,
+    "status": "COMPLETED"
+  }
+]
+```
 
-| STT | Chức năng | Method | Endpoint Path | Request Body | Response Success |
-| :---: | :--- | :---: | :--- | :--- | :--- |
-| 1 | Tạo chuyến đi mới | `POST` | `/api/trips` | `Trip` (`TripRequest`) | `Trip` (`TripResponse`) |
-| 2 | Xem danh sách chuyến đi | `GET` | `/api/trips` | None | `List<Trip>` |
-| 3 | Xem chi tiết 1 chuyến đi | `GET` | `/api/trips/{id}` | Path `{id}` | `Trip` |
-| 4 | Xóa chuyến đi | `DELETE` | `/api/trips/{id}` | Path `{id}` | `200 OK` |
+### 3.3 Lấy Chi Tiết Một Chuyến Đi theo ID
+* **HTTP Method:** `GET`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/trips/{id}`
+
+### 3.4 Xóa Chuyến Đi
+* **HTTP Method:** `DELETE`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/trips/{id}`
 
 ---
 
-## 📍 4. Module Lịch Trình (Itinerary)
+## 4. 📅 Phân Hệ Lịch Trình Chi Tiết Từng Ngày (`/itineraries`)
 
-### Data Models (DTOs)
-
-#### `ItineraryRequest` / `ItineraryResponse` (`ItineraryItem`)
+### 4.1 Lấy Danh Sách Lịch Trình Theo Trip ID
+* **HTTP Method:** `GET`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/itineraries?tripId={tripId}`
+* **Response `200 OK`:**
 ```json
-// POST /api/itineraries  hoặc  GET /api/trips/{tripId}/itineraries
+[
+  {
+    "id": 101,
+    "tripId": 1,
+    "dayNumber": 1,
+    "activityTime": "08:00:00",
+    "activityName": "Bay đến Đà Nẵng & Di chuyển Hội An",
+    "locationName": "Sân bay Đà Nẵng ➔ Phố cổ",
+    "latitude": 15.8801,
+    "longitude": 108.3380,
+    "placeId": "p1",
+    "note": "Khởi hành chuyến đi"
+  },
+  {
+    "id": 105,
+    "tripId": 1,
+    "dayNumber": 2,
+    "activityTime": "07:30:00",
+    "activityName": "Ăn bánh mì Phượng & Cà phê Mắt Đèn",
+    "locationName": "Đường Phan Chu Trinh",
+    "latitude": 15.8780,
+    "longitude": 108.3290,
+    "placeId": "p5",
+    "note": "Ăn sáng điểm tâm"
+  }
+]
+```
+
+### 4.2 Thêm Mốc Lịch Trình Mới
+* **HTTP Method:** `POST`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/itineraries`
+* **Request Body:**
+```json
 {
-  "id": 1,
   "tripId": 1,
-  "dayNumber": 1,
-  "activityTime": "08:00:00",
-  "activityName": "Bay đến Đà Nẵng",
-  "locationName": "Sân bay Đà Nẵng",
-  "latitude": 16.0544,
-  "longitude": 108.2022,
-  "placeId": "place_123",
-  "note": "Đáp sân bay Đà Nẵng"
+  "dayNumber": 2,
+  "activityTime": "14:30:00",
+  "activityName": "Trải nghiệm làm gốm Thanh Hà",
+  "locationName": "Làng gốm Thanh Hà",
+  "latitude": 15.8820,
+  "longitude": 108.3050,
+  "placeId": "p7",
+  "note": "Tự tay nặn sản phẩm gốm"
 }
 ```
 
-### Danh sách API Endpoints
-
-| STT | Chức năng | Method | Endpoint Path | Request Body | Response Success |
-| :---: | :--- | :---: | :--- | :--- | :--- |
-| 1 | Thêm lịch trình (ngày/giờ) | `POST` | `/api/itineraries` | `ItineraryItem` | `ItineraryItem` |
-| 2 | Xem lịch trình chuyến đi | `GET` | `/api/trips/{tripId}/itineraries` | Path `{tripId}` | `List<ItineraryItem>` |
-
 ---
 
-## 💸 5. Module Chi Tiêu (Expense)
+## 5. 💳 Phân Hệ Quản Lý Tài Chính & Chi Tiêu (`/expenses`)
 
-### Data Models (DTOs)
-
-#### `ExpenseRequest` / `ExpenseResponse` (`Expense`)
+### 5.1 Lấy Chi Tiết Chi Tiêu Theo Chuyến Đi
+* **HTTP Method:** `GET`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/expenses?tripId={tripId}`
+* **Response `200 OK`:**
 ```json
-// POST /api/expenses  hoặc  GET /api/trips/{tripId}/expenses
+[
+  {
+    "id": 201,
+    "tripId": 1,
+    "amount": 2500000.0,
+    "category": "TICKET",
+    "description": "Vé máy bay khứ hồi",
+    "expenseDate": "29-09-2026",
+    "paymentMethod": "CASH"
+  },
+  {
+    "id": 202,
+    "tripId": 1,
+    "amount": 3200000.0,
+    "category": "ACCOMMODATION",
+    "description": "Resort 3 đêm",
+    "expenseDate": "29-09-2026",
+    "paymentMethod": "CARD"
+  }
+]
+```
+
+### 5.2 Thêm Khoản Chi Tiêu Mới
+* **HTTP Method:** `POST`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/expenses`
+* **Request Body:**
+```json
 {
-  "id": 1,
   "tripId": 1,
-  "amount": 2000000.0,
-  "category": "TICKET",
-  "description": "Vé máy bay khứ hồi",
-  "expenseDate": "01-06-2025",
+  "amount": 350000.0,
+  "category": "FOOD",
+  "description": "Ăn tối Cơm gà Bà Buổi",
+  "expenseDate": "29-09-2026",
   "paymentMethod": "CASH"
 }
 ```
 
-#### `ExpenseTotalResponse`
+### 5.3 Lấy Tổng Chi Tiêu Của Chuyến Đi
+* **HTTP Method:** `GET`
+* **Headers:** `Authorization: Bearer <token>`
+* **Endpoint:** `/expenses/total?tripId={tripId}`
+* **Response `200 OK`:**
 ```json
-// GET /api/trips/{tripId}/expenses/total
 {
   "tripId": 1,
-  "totalExpense": 3500000.0
+  "totalExpense": 7500000.0
 }
 ```
 
-### Danh sách API Endpoints
-
-| STT | Chức năng | Method | Endpoint Path | Request Body | Response Success |
-| :---: | :--- | :---: | :--- | :--- | :--- |
-| 1 | Ghi chép chi tiêu mới | `POST` | `/api/expenses` | `Expense` | `Expense` |
-| 2 | Xem danh sách chi tiêu | `GET` | `/api/trips/{tripId}/expenses` | Path `{tripId}` | `List<Expense>` |
-| 3 | Xem tổng tiền đã tiêu | `GET` | `/api/trips/{tripId}/expenses/total` | Path `{tripId}` | `ExpenseTotalResponse` |
-
 ---
 
-## 🖼️ 6. Module Media (Album & Ảnh)
+## 🖼️ 6. Phân Hệ Lưu Trữ Media & Ảnh (`/media`)
 
-### Data Models (DTOs)
-
-#### `MediaUploadResponse` (`TripMedia`)
+### 6.1 Tải Lên Ảnh/Video Kỷ Niệm
+* **HTTP Method:** `POST`
+* **Headers:** `Content-Type: multipart/form-data`
+* **Endpoint:** `/media/upload`
+* **Form Data:**
+  - `file`: (Binary image/video)
+  - `tripId`: `1`
+* **Response `200 OK`:**
 ```json
-// POST /api/media/upload
 {
-  "id": 1,
+  "id": 501,
   "tripId": 1,
-  "albumId": 10,
-  "photoUrl": "https://example.com/photo1.jpg",
-  "caption": "Ảnh đẹp Đà Nẵng",
-  "uploadedAt": "01-06-2025 10:00:00"
+  "mediaUrl": "https://cdn.mytravel.com/media/2026/09/photo_hoian.jpg",
+  "caption": "Ảnh thả đèn lồng sông Hoài",
+  "uploadedAt": "29-09-2026 20:15:00"
 }
 ```
 
-### Danh sách API Endpoints
-
-| STT | Chức năng | Method | Endpoint Path | Form Data | Response Success |
-| :---: | :--- | :---: | :--- | :--- | :--- |
-| 1 | Upload ảnh lên Drive / Server | `POST` | `/api/media/upload` | Multipart: `file`, `tripId` | `TripMedia` |
-
 ---
 
-## 🛠 7. Cấu Trúc Mã Nguồn Mobile App Đã Đồng Bộ
+## 🚨 Mã Lỗi Chuẩn HTTP (HTTP Error Codes)
 
-```text
-com.travel.mytravel
-├── api
-│   ├── ApiClient.java            # Khởi tạo Retrofit
-│   ├── ApiService.java           # Khai báo các endpoints khớp 100% BE DTO
-│   └── MockApiService.java       # Giả lập trả về đúng định dạng DTO BE
-└── model
-    ├── Expense.java              # Đồng bộ ExpenseRequest/Response (expenseDate, description, paymentMethod)
-    ├── ExpenseTotalResponse.java # Tổng chi tiêu (tripId, totalExpense)
-    ├── ItineraryItem.java        # Đồng bộ ItineraryRequest/Response (activityTime, activityName, note)
-    ├── LoginRequest.java         # (username, password)
-    ├── LoginResponse.java        # (accessToken, tokenType, username)
-    ├── RegisterRequest.java      # (username, password, email, fullName)
-    ├── Trip.java                 # Đồng bộ TripRequest/Response (startDate, endDate, totalBudget)
-    ├── TripMedia.java            # Đồng bộ MediaUploadResponse (photoUrl, albumId)
-    └── UserProfile.java          # Đồng bộ UserProfileResponse
-```
+| Status Code | Tên Lỗi | Nguyên Nhân & Giải Pháp |
+| :--- | :--- | :--- |
+| `200 OK` | Success | Yêu cầu xử lý thành công. |
+| `201 Created` | Created | Tạo mới dữ liệu (Trip, Itinerary, Expense) thành công. |
+| `400 Bad Request` | Bad Request | Dữ liệu gửi lên sai định dạng hoặc thiếu trường bắt buộc. |
+| `401 Unauthorized` | Unauthorized | Token JWT hết hạn hoặc không hợp lệ. |
+| `404 Not Found` | Not Found | Không tìm thấy chuyến đi, tài khoản hoặc mốc lịch trình. |
+| `500 Internal Error` | Server Error | Lỗi xử lý phía máy chủ Backend. |

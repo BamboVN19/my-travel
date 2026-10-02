@@ -1,13 +1,12 @@
 package com.mytravel.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Table(name = "users")
 @Data
@@ -15,41 +14,57 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class User {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
 
-  @Column(unique = true, nullable = false)
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
+
+  @Column(nullable = false, unique = true, length = 50)
   private String username;
 
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @Column(nullable = false, unique = true, length = 100)
+  private String email;
+
   @Column(name = "password_hash", nullable = false)
   private String passwordHash;
 
-  @Column(unique = true, nullable = false)
-  private String email;
-
-  @Column(name = "full_name")
+  @Column(name = "full_name", length = 100)
   private String fullName;
 
-  @Column(name = "phone_number")
+  @Column(name = "phone_number", length = 20)
   private String phoneNumber;
 
-  @Column(name = "avatar_url")
+  @Column(name = "avatar_url", columnDefinition = "TEXT")
   private String avatarUrl;
 
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  @Column(name = "refresh_token")
-  private String refreshToken;
+  @Builder.Default
+  @Column(length = 20)
+  private String status = "ACTIVE";
 
   @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
   @Column(name = "created_at")
   private LocalDateTime createdAt;
+
+  @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
 
   @PrePersist
   protected void onCreate() {
     if (createdAt == null) {
       createdAt = LocalDateTime.now();
     }
+    if (updatedAt == null) {
+      updatedAt = LocalDateTime.now();
+    }
+    if (status == null) {
+      status = "ACTIVE";
+    }
+  }
+
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
   }
 }

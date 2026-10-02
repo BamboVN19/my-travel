@@ -1,40 +1,61 @@
 package com.mytravel.api.controller;
 
-import com.mytravel.api.dto.LoginRequest;
-import com.mytravel.api.dto.LoginResponse;
-import com.mytravel.api.dto.RegisterRequest;
-import com.mytravel.api.entity.User;
-import com.mytravel.api.security.JwtUtils;
-import com.mytravel.api.service.UserService;
+import com.mytravel.api.dto.*;
+import com.mytravel.api.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
-  private final UserService userService;
-  private final JwtUtils jwtUtils;
+  private final AuthService authService;
 
   @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-    try {
-      return ResponseEntity.ok(userService.register(request));
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+  public ResponseEntity<UserProfileResponse> register(@Valid @RequestBody RegisterRequest request) {
+    UserProfileResponse response = authService.register(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-    try {
-      User user = userService.login(request.getUsername(), request.getPassword());
-      String token = jwtUtils.generateToken(user.getUsername());
-      return ResponseEntity.ok(new LoginResponse(token, "Bearer", user.getUsername()));
-    } catch (Exception e) {
-      return ResponseEntity.status(401).body(e.getMessage());
-    }
+  public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    LoginResponse response = authService.login(request);
+    return ResponseEntity.ok(response);
+  }
+
+  @PostMapping("/refresh-token")
+  public ResponseEntity<RefreshTokenResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+    RefreshTokenResponse response = authService.refreshToken(request);
+    return ResponseEntity.ok(response);
+  }
+
+  @PostMapping("/logout")
+  public ResponseEntity<Map<String, String>> logout(@Valid @RequestBody LogoutRequest request) {
+    authService.logout(request);
+    return ResponseEntity.ok(Map.of("message", "Đăng xuất thành công"));
+  }
+
+  @PostMapping("/forgot-password")
+  public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+    authService.forgotPassword(request);
+    return ResponseEntity.ok(Map.of("message", "Mã OTP đã được gửi đến email của bạn"));
+  }
+
+  @PostMapping("/reset-password")
+  public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+    authService.resetPassword(request);
+    return ResponseEntity.ok(Map.of("message", "Đặt lại mật khẩu thành công!"));
+  }
+
+  @PostMapping("/change-password")
+  public ResponseEntity<Map<String, String>> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+    authService.changePassword(request);
+    return ResponseEntity.ok(Map.of("message", "Đổi mật khẩu thành công!"));
   }
 }

@@ -3,8 +3,11 @@ package com.travel.mytravel.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Trip {
-    private Long id;
-    private Long userId;
+    private String id;
+
+    @SerializedName(value = "ownerId", alternate = {"userId"})
+    private String ownerId;
+
     private String title;
     private String destination;
 
@@ -25,9 +28,9 @@ public class Trip {
     public Trip() {
     }
 
-    public Trip(Long id, Long userId, String title, String destination, String startDate, String endDate, double totalBudget, String status) {
+    public Trip(String id, String ownerId, String title, String destination, String startDate, String endDate, double totalBudget, String status) {
         this.id = id;
-        this.userId = userId;
+        this.ownerId = ownerId;
         this.title = title;
         this.destination = destination;
         this.startDate = startDate;
@@ -36,20 +39,28 @@ public class Trip {
         this.status = status;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getUserId() {
+        return ownerId;
+    }
+
+    public void setUserId(String userId) {
+        this.ownerId = userId;
     }
 
     public String getTitle() {

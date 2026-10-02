@@ -1,14 +1,14 @@
 package com.mytravel.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
-@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Table(name = "itineraries")
 @Data
@@ -16,23 +16,28 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Builder
 public class Itinerary {
+
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "trip_id", nullable = false)
-  @JsonIgnore
   private Trip trip;
 
-  @Column(name = "day_number")
+  @Column(name = "day_number", nullable = false)
   private Integer dayNumber;
+
+  @Builder.Default
+  @Column(name = "order_index", nullable = false)
+  private Integer orderIndex = 0;
 
   @JsonFormat(pattern = "HH:mm[:ss]")
   @Column(name = "activity_time")
   private LocalTime activityTime;
 
-  @Column(name = "activity_name")
+  @Column(name = "activity_name", nullable = false, length = 200)
   private String activityName;
 
   @Column(name = "location_name")
@@ -44,9 +49,22 @@ public class Itinerary {
   @Column(precision = 11, scale = 8)
   private BigDecimal longitude;
 
-  @Column(name = "place_id")
+  @Column(name = "place_id", columnDefinition = "TEXT")
   private String placeId;
 
   @Column(columnDefinition = "TEXT")
   private String note;
+
+  @Column(name = "image_url", columnDefinition = "TEXT")
+  private String imageUrl;
+
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
+
+  @PrePersist
+  protected void onCreate() {
+    if (createdAt == null) {
+      createdAt = LocalDateTime.now();
+    }
+  }
 }

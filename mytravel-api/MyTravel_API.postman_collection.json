@@ -233,7 +233,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"tripId\": {{tripId}},\n  \"dayNumber\": 1,\n  \"activityTime\": \"08:30:00\",\n  \"activityName\": \"Tham quan Bà Nà Hills\",\n  \"locationName\": \"Bà Nà Hills, Đà Nẵng\",\n  \"latitude\": 15.99898000,\n  \"longitude\": 107.98634000,\n  \"placeId\": \"ChIJyY43V_2-QjERL_wJmZ1x17s\",\n  \"note\": \"Đi cáp treo lúc 8h30 sáng\"\n}"
+              "raw": "{\n  \"tripId\": {{tripId}},\n  \"dayNumber\": 1,\n  \"activityTime\": \"08:30:00\",\n  \"activityName\": \"Tham quan Bà Nà Hills\",\n  \"locationName\": \"Bà Nà Hills, Đà Nẵng\",\n  \"latitude\": 15.99898000,\n  \"longitude\": 107.98634000,\n  \"placeId\": \"ChIJyY43V_2-QjERL_wJmZ1x17s\",\n  \"note\": \"Đi cáp treo lúc 8h30 sáng\",\n  \"imageUrl\": \"https://cdn.mytravel.com/itineraries/ba-na-hills.jpg\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/itineraries",
@@ -373,6 +373,117 @@
               ]
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "Locations Module",
+      "item": [
+        {
+          "name": "Tìm kiếm địa điểm (DB First -> Maps Fallback)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/search?query=Đà+Lạt",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "Đà+Lạt"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Gợi ý Tour & Lịch trình mẫu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/tours?query=Hà+Giang",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "tours"
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "Hà+Giang"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.3 Get Suggested Tour Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/locations/tours/a1b2c3d4-0000-0000-0000-000000000001",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "locations",
+                "tours",
+                "a1b2c3d4-0000-0000-0000-000000000001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7.4 Import Suggested Tour to User Trip",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"18-10-2026\",\n  \"customTitle\": \"Chuyến đi Hà Giang tự túc 2026\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/locations/tours/a1b2c3d4-0000-0000-0000-000000000001/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "locations",
+                "tours",
+                "a1b2c3d4-0000-0000-0000-000000000001",
+                "import"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }

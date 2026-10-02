@@ -1,13 +1,12 @@
 package com.mytravel.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Table(name = "album_photos")
 @Data
@@ -15,13 +14,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class AlbumPhoto {
+
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", updatable = false, nullable = false)
+  private UUID id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "album_id", nullable = false)
-  @JsonIgnore
   private MediaAlbum album;
 
   @Column(name = "photo_url", nullable = false, columnDefinition = "TEXT")

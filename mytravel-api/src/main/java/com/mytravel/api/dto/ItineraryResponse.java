@@ -1,19 +1,24 @@
 package com.mytravel.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ItineraryResponse {
-  private Long id;
-  private Long tripId;
+  private UUID id;
+  private UUID tripId;
   private Integer dayNumber;
+  private Integer orderIndex;
 
   @JsonFormat(pattern = "HH:mm:ss")
   private LocalTime activityTime;
@@ -24,4 +29,5 @@ public class ItineraryResponse {
   private BigDecimal longitude;
   private String placeId;
   private String note;
+  private String imageUrl;
 }

@@ -1,0 +1,1085 @@
+{
+  "info": {
+    "_postman_id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "name": "MyTravel RESTful API v2.0 Collection",
+    "description": "Bộ Collection Postman hoàn chỉnh cho hệ thống MyTravel API v2.0 (Auth, User Profile, Trips, Itineraries, Expenses, Media Albums & Vietmap/Google Maps Locations). Tự động lưu Token và IDs vào variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Authentication Module (/auth)",
+      "item": [
+        {
+          "name": "1.1 Đăng ký tài khoản (Register)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"ngocdai\",\n  \"email\": \"ngocdai@mytravel.com\",\n  \"password\": \"Password123@\",\n  \"fullName\": \"Bùi Ngọc Đại\",\n  \"phone\": \"0912345678\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.2 Đăng nhập (Login - Auto Saves Tokens)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.accessToken);",
+                  "    console.log('Saved accessToken:', res.accessToken);",
+                  "}",
+                  "if (res.refreshToken) {",
+                  "    pm.collectionVariables.set('refreshToken', res.refreshToken);",
+                  "    console.log('Saved refreshToken:', res.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin123@\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.3 Làm mới Access Token (Refresh Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.accessToken);",
+                  "}",
+                  "if (res.refreshToken) {",
+                  "    pm.collectionVariables.set('refreshToken', res.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh-token"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.4 Đăng xuất (Logout)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.5 Yêu cầu OTP Quên mật khẩu",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@mytravel.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.6 Đặt lại mật khẩu bằng OTP",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@mytravel.com\",\n  \"otpCode\": \"123456\",\n  \"newPassword\": \"AdminNewPass123@\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            }
+          }
+        },
+        {
+          "name": "1.7 Đổi mật khẩu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"Admin123@\",\n  \"newPassword\": \"AdminNewPass123@\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. User Profile Module (/users)",
+      "item": [
+        {
+          "name": "2.1 Lấy thông tin cá nhân (Me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.2 Cập nhật hồ sơ cá nhân",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Bùi Ngọc Đại (VIP User)\",\n  \"phoneNumber\": \"0988776655\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2.3 Tải lên Avatar cá nhân",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me/avatar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me",
+                "avatar"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Trips Module (/trips)",
+      "item": [
+        {
+          "name": "3.1 Tạo chuyến đi mới (Auto Saves tripId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.id) {",
+                  "    pm.collectionVariables.set('tripId', res.id);",
+                  "    console.log('Saved tripId:', res.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Chuyến đi Đà Lạt, Lâm Đồng\",\n  \"destination\": \"Đà Lạt, Lâm Đồng\",\n  \"startDate\": \"18-10-2026\",\n  \"endDate\": \"22-10-2026\",\n  \"totalBudget\": 12000000.0,\n  \"status\": \"PLANNED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.2 Phân trang & Lọc chuyến đi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips?status=PLANNED&search=Đà+Lạt&page=0&size=10&sort=startDate,asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PLANNED"
+                },
+                {
+                  "key": "search",
+                  "value": "Đà+Lạt"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "startDate,asc"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.3 Xem chi tiết chuyến đi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.4 Cập nhật chuyến đi",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Chuyến đi Đà Lạt (Mở rộng)\",\n  \"destination\": \"Đà Lạt & Bảo Lộc\",\n  \"startDate\": \"18-10-2026\",\n  \"endDate\": \"24-10-2026\",\n  \"totalBudget\": 15000000.0,\n  \"status\": \"ONGOING\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.5 Mời thành viên đi cùng",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ngocdai@mytravel.com\",\n  \"role\": \"EDITOR\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "members"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.6 Xem danh sách thành viên",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "members"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.7 Xóa chuyến đi",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Itineraries Module (/itineraries)",
+      "item": [
+        {
+          "name": "4.1 Thêm mốc lịch trình (Auto Saves itineraryId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.id) {",
+                  "    pm.collectionVariables.set('itineraryId', res.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dayNumber\": 1,\n  \"orderIndex\": 1,\n  \"activityTime\": \"08:00:00\",\n  \"activityName\": \"Bay đến Đà Lạt & Nhận phòng khách sạn\",\n  \"locationName\": \"Khách sạn Dalat Palace\",\n  \"latitude\": 11.9404,\n  \"longitude\": 108.4378,\n  \"placeId\": \"vm:ADDRESS:MM03541B04565B050A19550B5B0B140D0C0C5A165351004C1B06055C0452015F095C010F5B0B5F040A54426140CCDC950C127D5CF68F586B030D4507\",\n  \"note\": \"Nhớ xuất trình Căn cước công dân\",\n  \"imageUrl\": \"https://cdn.mytravel.com/itineraries/goc-gom-thanh-ha.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/itineraries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "itineraries"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.2 Xem lịch trình của chuyến đi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/itineraries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "itineraries"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.3 Cập nhật mốc lịch trình",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dayNumber\": 1,\n  \"orderIndex\": 1,\n  \"activityTime\": \"08:30:00\",\n  \"activityName\": \"Check-in khách sạn & Nghỉ ngơi\",\n  \"locationName\": \"Khách sạn Dalat Palace\",\n  \"latitude\": 11.9404,\n  \"longitude\": 108.4378,\n  \"placeId\": \"vm:ADDRESS:MM03541B04565B050A19550B5B0B140D0C0C5A165351004C1B06055C0452015F095C010F5B0B5F040A54426140CCDC950C127D5CF68F586B030D4507\",\n  \"note\": \"Đã dời thời gian thêm 30 phút\",\n  \"imageUrl\": \"https://cdn.mytravel.com/itineraries/dalat-palace.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/itineraries/{{itineraryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "itineraries",
+                "{{itineraryId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4.4 Xóa mốc lịch trình",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/itineraries/{{itineraryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "itineraries",
+                "{{itineraryId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Expenses Module (/expenses)",
+      "item": [
+        {
+          "name": "5.1 Thêm khoản chi tiêu mới (Có chia tiền nhóm)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.id) {",
+                  "    pm.collectionVariables.set('expenseId', res.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 900000.0,\n  \"category\": \"FOOD\",\n  \"description\": \"Ăn tối lẩu gà lá é\",\n  \"expenseDate\": \"19-10-2026\",\n  \"paymentMethod\": \"CASH\",\n  \"splits\": [\n    { \"userId\": \"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\", \"splitAmount\": 300000.0, \"isSettled\": true },\n    { \"userId\": \"d3eebc99-9c0b-4ef8-bb6d-6bb9bd380d44\", \"splitAmount\": 300000.0, \"isSettled\": true }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "expenses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.2 Xem danh sách chi tiêu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/expenses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "expenses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.3 Báo cáo tổng hợp chi tiêu & Ngân sách",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/expenses/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "expenses",
+                "summary"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.4 Cập nhật khoản chi tiêu",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 950000.0,\n  \"category\": \"FOOD\",\n  \"description\": \"Ăn tối lẩu gà lá é (Thêm nước uống)\",\n  \"expenseDate\": \"19-10-2026\",\n  \"paymentMethod\": \"CASH\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "expenses",
+                "{{expenseId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5.5 Xóa khoản chi tiêu",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "expenses",
+                "{{expenseId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Media Albums Module (/media)",
+      "item": [
+        {
+          "name": "6.1 Tạo Album mới (Auto Saves albumId)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.id) {",
+                  "    pm.collectionVariables.set('albumId', res.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"albumTitle\": \"Ảnh kỷ niệm Ngày 1 - Hồ Tuyền Lâm\",\n  \"description\": \"Chụp lúc hoàng hôn\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/albums",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "albums"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.2 Lấy danh sách Album của chuyến đi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/{{tripId}}/albums",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "trips",
+                "{{tripId}}",
+                "albums"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.3 Upload ảnh vào Album",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var res = pm.response.json();",
+                  "if (res.length > 0 && res[0].id) {",
+                  "    pm.collectionVariables.set('photoId', res[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "caption",
+                  "value": "Ảnh tập thể ngắm hoàng hôn",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/albums/{{albumId}}/photos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "albums",
+                "{{albumId}}",
+                "photos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.4 Xóa ảnh khỏi Album",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/photos/{{photoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "photos",
+                "{{photoId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Locations & Maps Module (/locations)",
+      "item": [
+        {
+          "name": "7.1 Tìm kiếm địa điểm (Ưu tiên DB -> Fallback Maps)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/search?query=Đà+Lạt",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "Đà+Lạt"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.2 Gợi ý Tour & Timeline Lịch trình từ DB",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/tours?query=Hà+Giang",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "tours"
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "Hà+Giang"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.3 Xem chi tiết địa điểm (DB / Vietmap / Google Place ID)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/details/db_itin_c2eebc99-9c0b-4ef8-bb6d-6bb9bd380c33",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "details",
+                "db_itin_c2eebc99-9c0b-4ef8-bb6d-6bb9bd380c33"
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.4 Tra cứu địa chỉ từ tọa độ (Reverse Geocode)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/reverse-geocode?lat=10.759221&lng=106.675901&provider=vietmap",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "reverse-geocode"
+              ],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "10.759221"
+                },
+                {
+                  "key": "lng",
+                  "value": "106.675901"
+                },
+                {
+                  "key": "provider",
+                  "value": "vietmap"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.5 Xem chi tiết Tour gợi ý theo ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/locations/tours/a1b2c3d4-0000-0000-0000-000000000001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "tours",
+                "a1b2c3d4-0000-0000-0000-000000000001"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7.6 Nhập Tour gợi ý vào Chuyến đi cá nhân (Import)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"18-10-2026\",\n  \"customTitle\": \"Chuyến đi Hà Giang tự túc 2026\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/locations/tours/a1b2c3d4-0000-0000-0000-000000000001/import",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "locations",
+                "tours",
+                "a1b2c3d4-0000-0000-0000-000000000001",
+                "import"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tripId",
+      "value": "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380b22",
+      "type": "string"
+    },
+    {
+      "key": "itineraryId",
+      "value": "c2eebc99-9c0b-4ef8-bb6d-6bb9bd380c33",
+      "type": "string"
+    },
+    {
+      "key": "expenseId",
+      "value": "d3eebc99-9c0b-4ef8-bb6d-6bb9bd380d44",
+      "type": "string"
+    },
+    {
+      "key": "albumId",
+      "value": "e4eebc99-9c0b-4ef8-bb6d-6bb9bd380e55",
+      "type": "string"
+    },
+    {
+      "key": "photoId",
+      "value": "f5eebc99-9c0b-4ef8-bb6d-6bb9bd380f66",
+      "type": "string"
+    }
+  ]
+}

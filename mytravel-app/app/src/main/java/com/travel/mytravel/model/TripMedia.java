@@ -3,9 +3,9 @@ package com.travel.mytravel.model;
 import com.google.gson.annotations.SerializedName;
 
 public class TripMedia {
-    private Long id;
-    private Long tripId;
-    private Long albumId;
+    private String id;
+    private String tripId;
+    private String albumId;
 
     @SerializedName("photoUrl")
     private String photoUrl;
@@ -18,7 +18,7 @@ public class TripMedia {
     public TripMedia() {
     }
 
-    public TripMedia(Long id, Long tripId, Long albumId, String photoUrl, String caption, String uploadedAt) {
+    public TripMedia(String id, String tripId, String albumId, String photoUrl, String caption, String uploadedAt) {
         this.id = id;
         this.tripId = tripId;
         this.albumId = albumId;
@@ -27,27 +27,27 @@ public class TripMedia {
         this.uploadedAt = uploadedAt;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getTripId() {
+    public String getTripId() {
         return tripId;
     }
 
-    public void setTripId(Long tripId) {
+    public void setTripId(String tripId) {
         this.tripId = tripId;
     }
 
-    public Long getAlbumId() {
+    public String getAlbumId() {
         return albumId;
     }
 
-    public void setAlbumId(Long albumId) {
+    public void setAlbumId(String albumId) {
         this.albumId = albumId;
     }
 

@@ -3,7 +3,7 @@ package com.travel.mytravel.model;
 import com.google.gson.annotations.SerializedName;
 
 public class UserProfile {
-    private Long id;
+    private String id;
     private String username;
     private String email;
     private String fullName;
@@ -16,7 +16,7 @@ public class UserProfile {
     public UserProfile() {
     }
 
-    public UserProfile(Long id, String username, String email, String fullName, String phoneNumber, String avatarUrl, String createdAt) {
+    public UserProfile(String id, String username, String email, String fullName, String phoneNumber, String avatarUrl, String createdAt) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -26,11 +26,11 @@ public class UserProfile {
         this.createdAt = createdAt;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

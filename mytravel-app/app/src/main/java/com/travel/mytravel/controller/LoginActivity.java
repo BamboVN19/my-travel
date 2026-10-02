@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.travel.mytravel.R;
 import com.travel.mytravel.api.ApiClient;
+import com.travel.mytravel.api.TokenManager;
 import com.travel.mytravel.model.LoginRequest;
 import com.travel.mytravel.model.LoginResponse;
 
@@ -28,22 +30,27 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText edtUsername, edtPassword;
     private Button btnLogin;
-    private TextView tvGoToRegister;
+    private TextView tvGoToRegister, tvForgotPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        ApiClient.init(getApplicationContext());
+
         initViews();
 
-        // Chuyển sang màn hình Đăng ký
         tvGoToRegister.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
 
-        // Xử lý nút Đăng nhập
+        tvForgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
+
         btnLogin.setOnClickListener(v -> {
             String user = edtUsername.getText().toString().trim();
             String pass = edtPassword.getText().toString().trim();
@@ -61,33 +68,47 @@ public class LoginActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         tvGoToRegister = findViewById(R.id.tvGoToRegister);
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
     }
 
     private void performLogin(String user, String pass) {
         LoginRequest request = new LoginRequest(user, pass);
 
-        // Gọi API qua Service
+        Log.d("MYTRAVEL_API", "Attempting login for user: " + user);
+
         ApiClient.getService().loginWithRequest(request).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    String username = response.body().getUsername();
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công! Chào " + username, Toast.LENGTH_LONG).show();
+                    LoginResponse res = response.body();
+                    String loggedUser = res.getUsername() != null ? res.getUsername() : user;
 
-                    // TODO: Chuyển sang DashboardActivity tại đây
+                    TokenManager tokenManager = ApiClient.getTokenManager();
+                    if (tokenManager == null) {
+                        tokenManager = new TokenManager(getApplicationContext());
+                    }
+                    tokenManager.saveTokens(res.getAccessToken(), res.getRefreshToken(), loggedUser);
+
+                    Log.d("MYTRAVEL_API", "✅ Login SUCCESS for user: " + loggedUser
+                        + " | Token: " + res.getAccessToken());
+
+                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công! Chào " + loggedUser, Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
+                    ApiClient.showError(LoginActivity.this, response, "Sai tài khoản hoặc mật khẩu!");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-                Toast.makeText(LoginActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                ApiClient.handleFailure(LoginActivity.this, t, "Lỗi kết nối đăng nhập");
             }
         });
     }
 
-    // Logic: Click ra ngoài ô nhập liệu để ẩn bàn phím
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event != null && event.getAction() == MotionEvent.ACTION_DOWN) {

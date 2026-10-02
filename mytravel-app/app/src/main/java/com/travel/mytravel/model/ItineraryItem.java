@@ -3,8 +3,8 @@ package com.travel.mytravel.model;
 import com.google.gson.annotations.SerializedName;
 
 public class ItineraryItem {
-    private Long id;
-    private Long tripId;
+    private String id;
+    private String tripId;
     private Integer dayNumber;
 
     @SerializedName("activityTime")
@@ -21,11 +21,18 @@ public class ItineraryItem {
     @SerializedName("note")
     private String note;
 
+    private String imageUrl;
+
     public ItineraryItem() {
     }
 
-    public ItineraryItem(Long id, Long tripId, Integer dayNumber, String activityTime, String activityName,
+    public ItineraryItem(String id, String tripId, Integer dayNumber, String activityTime, String activityName,
                          String locationName, Double latitude, Double longitude, String placeId, String note) {
+        this(id, tripId, dayNumber, activityTime, activityName, locationName, latitude, longitude, placeId, note, null);
+    }
+
+    public ItineraryItem(String id, String tripId, Integer dayNumber, String activityTime, String activityName,
+                         String locationName, Double latitude, Double longitude, String placeId, String note, String imageUrl) {
         this.id = id;
         this.tripId = tripId;
         this.dayNumber = dayNumber;
@@ -36,21 +43,22 @@ public class ItineraryItem {
         this.longitude = longitude;
         this.placeId = placeId;
         this.note = note;
+        this.imageUrl = imageUrl;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getTripId() {
+    public String getTripId() {
         return tripId;
     }
 
-    public void setTripId(Long tripId) {
+    public void setTripId(String tripId) {
         this.tripId = tripId;
     }
 
@@ -116,5 +124,13 @@ public class ItineraryItem {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
