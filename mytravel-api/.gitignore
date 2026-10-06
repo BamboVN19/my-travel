@@ -41,4 +41,5 @@ postgres_data/
 
 
 .gradle/
+uploads/
 
